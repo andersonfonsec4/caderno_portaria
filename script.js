@@ -163,5 +163,18 @@ async function atualizarRegistros() {
     });
 }
 
+// Função para ativar o modo de tela cheia
+document.getElementById('fullscreenBtn').addEventListener('click', function() {
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+        document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari e Opera
+        document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+        document.documentElement.msRequestFullscreen();
+    }
+});
+
 // Atualizar registros ao carregar a página
 atualizarRegistros();
