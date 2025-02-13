@@ -71,19 +71,65 @@ function deleteRegistro(db, id) {
     });
 }
 
+// Função para limpar todos os registros
+function clearRegistros(db) {
+    return new Promise((resolve, reject) => {
+        let transaction = db.transaction(['registros'], 'readwrite');
+        let objectStore = transaction.objectStore('registros');
+        let request = objectStore.clear();
+
+        request.onsuccess = function() {
+            resolve();
+        };
+
+        request.onerror = function(event) {
+            reject(event.target.error);
+        };
+    });
+}
+
+// Função para imprimir registros
+document.getElementById('printBtn').addEventListener('click', function() {
+    window.print();
+});
+
+// Função para salvar registros em um arquivo e limpar campos
+document.getElementById('saveBtn').addEventListener('click', async function() {
+    let db = await openDB();
+    let registros = await getRegistros(db);
+
+    let funcionario = document.getElementById('funcionario').value;
+    let turno = document.getElementById('turno').value;
+    let data = new Date().toLocaleDateString();
+    let cabecalho = `Funcionário de Serviço: ${funcionario}, Turno: ${turno}, Data: ${data}\n\n`;
+
+    let relatorio = registros.map(registro => `Nome: ${registro.nome}, Ação: ${registro.acao}, Horário: ${registro.horario}`).join('\n');
+
+    let blob = new Blob([cabecalho + relatorio], { type: 'text/plain' });
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'registros.txt';
+    a.click();
+
+    // Limpar campos e registros após salvar
+    document.getElementById('funcionario').value = '';
+    document.getElementById('turno').value = 'Manhã';
+    document.getElementById('registroForm').reset();
+    await clearRegistros(db);
+    atualizarRegistros();
+});
+
 // Manipuladores de eventos
 document.getElementById('registroForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     let nome = document.getElementById('nome').value;
     let acao = document.getElementById('acao').value;
-    let funcionario = document.getElementById('funcionario').value;
-    let turno = document.getElementById('turno').value;
     let registro = {
         nome: nome,
         acao: acao,
-        funcionario: funcionario,
-        turno: turno,
         horario: new Date().toLocaleString()
     };
 
@@ -102,7 +148,7 @@ async function atualizarRegistros() {
 
     registros.forEach(registro => {
         let item = document.createElement('li');
-        item.textContent = `Nome: ${registro.nome}, Ação: ${registro.acao}, Funcionário: ${registro.funcionario}, Turno: ${registro.turno}, Horário: ${registro.horario}`;
+        item.textContent = `Nome: ${registro.nome}, Ação: ${registro.acao}, Horário: ${registro.horario}`;
         
         let deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Excluir';
@@ -116,27 +162,6 @@ async function atualizarRegistros() {
         lista.appendChild(item);
     });
 }
-
-// Função para imprimir registros
-document.getElementById('printBtn').addEventListener('click', function() {
-    window.print();
-});
-
-// Função para salvar registros em um arquivo
-document.getElementById('saveBtn').addEventListener('click', async function() {
-    let db = await openDB();
-    let registros = await getRegistros(db);
-
-    let data = registros.map(registro => `Nome: ${registro.nome}, Ação: ${registro.acao}, Funcionário: ${registro.funcionario}, Turno: ${registro.turno}, Horário: ${registro.horario}`).join('\n');
-
-    let blob = new Blob([data], { type: 'text/plain' });
-    let url = URL.createObjectURL(blob);
-
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'registros.txt';
-    a.click();
-});
 
 // Atualizar registros ao carregar a página
 atualizarRegistros();

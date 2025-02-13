@@ -2,17 +2,33 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: #ffffff;
   color: #004d00;
+  margin: 0;
+  padding: 20px;
 }
 
-h1, h2 {
+h1 {
   font-family: 'Roboto', sans-serif;
   color: #004d00;
+  border-bottom: 2px solid #004d00;
+  padding-bottom: 10px;
+}
+
+h2 {
+  font-family: 'Roboto', sans-serif;
+  color: #004d00;
+  margin-top: 40px;
+  border-bottom: 1px solid #004d00;
+  padding-bottom: 5px;
 }
 
 form {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  background-color: #e6ffe6;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 label {
@@ -23,6 +39,8 @@ input, select, button {
   padding: 10px;
   margin-top: 5px;
   font-size: 16px;
+  border: 1px solid #004d00;
+  border-radius: 5px;
 }
 
 button {
@@ -31,6 +49,7 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -47,8 +66,10 @@ li {
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #004d00;
+  border-radius: 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .delete-btn {
@@ -56,9 +77,16 @@ li {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.delete-btn:hover {
+  background-color: darkred;
 }
 
 .buttons {
   display: flex;
   gap: 10px;
+  margin-top: 20px;
 }
